@@ -116,4 +116,7 @@ async def get_message(message_id: str) -> dict:
     if result:
         return result
     else:
-        raise HTTPException(status_code=404, detail="invalid message id")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="invalid message id"
+            )
