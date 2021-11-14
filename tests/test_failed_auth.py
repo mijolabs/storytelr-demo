@@ -21,13 +21,16 @@ def test_failed_auth():
     post_message_response = httpx.post(config.base_url, json=request_body, auth=(incorrect_username, config.password))
     assert post_message_response.status_code == 401
     assert post_message_response.headers["Content-Type"] == "application/json"
+    assert post_message_response.headers["WWW-Authenticate"] == "Basic"
 
     # Test incorrect password
     post_message_response = httpx.post(config.base_url, json=request_body, auth=(config.username, incorrect_password))
     assert post_message_response.status_code == 401
     assert post_message_response.headers["Content-Type"] == "application/json"
+    assert post_message_response.headers["WWW-Authenticate"] == "Basic"
 
     # Test incorrect username and password
     post_message_response = httpx.post(config.base_url, json=request_body, auth=(incorrect_username, incorrect_password))
     assert post_message_response.status_code == 401
     assert post_message_response.headers["Content-Type"] == "application/json"
+    assert post_message_response.headers["WWW-Authenticate"] == "Basic"
