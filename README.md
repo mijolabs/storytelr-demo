@@ -73,7 +73,7 @@ request_body = {
 r = httpx.post(endpoint, params=params, json=request_body, auth=auth)
 print(r.text)
 ```
-You can GET the message at its URL to verify it exists and reload the URL after it should have expired to see it's gone.
+You can GET the message at its URL to verify it exists and reload the URL after it should have expired to confirm that it is gone.
 
 ## Limitations, Possible Bugs, and Vulnerabilities
 - The lack of TLS opens up for the possibility of MITM attacks. HTTPS can be easily enabled by utilizing certificates but usually HTTPS is handled by an external tool, e.g. load balancer or cloud service.
