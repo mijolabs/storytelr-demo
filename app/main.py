@@ -14,6 +14,7 @@ from app.config import Configuration
 
 
 config = Configuration()
+
 app = FastAPI(title=config.title)
 security = HTTPBasic()
 
@@ -23,25 +24,29 @@ redis_conn = redis_client.connect()
 
 
 def generate_message_id(length: int = config.id_length) -> str:
-    """Return a randomized URL-safe string of n character length.
+    """
+    Return a randomized URL-safe string of n character length.
     """
     return secrets.token_urlsafe(length)
 
 
 def message_is_valid(message):
-    """Input validation checks.
+    """
+    Validate message length.
     """
     if config.min_length < len(message) < config.max_length:
         return True
     else:
         return False
 
+
 def get_base_url(url):
     """
     Parse the base URL out of a Request object.
     """
-    base_url = urlparse(url)
-    return f"{base_url.scheme}://{base_url.netloc}"
+    url = str(url)
+    url = urlparse(url)
+    return f"{url.scheme}://{url.netloc}"
 
 
 @app.post(
@@ -80,14 +85,14 @@ async def post_message(
     if not message_is_valid(message_contents):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="invalid message length"
+            detail="malformed message contents"
             )
 
     message_id = generate_message_id()
     created = int(datetime.now(timezone.utc).timestamp())
     expires = created + test_expiry if test_expiry else created + config.validity_seconds
     message = escape(message_contents)
-    url = f"{get_base_url(str(request.url))}/{message_id}"
+    url = f"{get_base_url(request.url)}/{message_id}"
     
     message_entry = Message(
         id = message_id,
@@ -99,6 +104,7 @@ async def post_message(
 
     message_entry = message_entry.dict()
     await redis_client.store_and_schedule(message_entry)
+
     return message_entry
 
 
@@ -106,15 +112,19 @@ async def post_message(
     "/{message_id}",
     status_code=status.HTTP_200_OK,
     response_model=Message,
-    tags=["messaging"], summary="Fetch a message", response_description="Message details"
+    tags=["messaging"],
+    summary="Fetch a message",
+    response_description="Message details"
     )
 async def get_message(message_id: str) -> dict:
     """
     Fetches a message by ID if it hasn't expired.
     """
     result = await redis_client.get(message_id)
+
     if result:
         return result
+
     else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
