@@ -1,6 +1,6 @@
 # Storytelr DEMO
 
-I had fun working on this, and welcome your questions and comments. Please don't hesitate to ping me if there is something I misunderstood regarding the task and I will gladly rectify it.
+I had fun working on this and welcome your questions and comments. Please don't hesitate to ping me if there is something I misunderstood regarding the task and I will gladly rectify it.
 
 > The goal is to design and build a RESTful API to serve as the backend for a message sharing system.
 > It should support the following features:
