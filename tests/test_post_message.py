@@ -8,13 +8,17 @@ import httpx
 config = Configuration()
 
 
-def test_post_message():    
+def test_post_message():
+    """
+    Test for creating a new message
+    """
     request_body = {
         "message":
             "Let us make the world a more empathetic and creative place "\
             "with great stories to be shared and enjoyed by anyone, anywhere and anytime."
     }
     
+    # Create a new message
     post_message_response = httpx.post(config.base_url, json=request_body, auth=(config.username, config.password))
     
     assert post_message_response.status_code == 201

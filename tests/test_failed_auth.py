@@ -7,7 +7,10 @@ import httpx
 config = Configuration()
 
 
-def test_failed_auth():    
+def test_failed_auth():
+    """
+    Test for failed auth on providing invalid credentials.
+    """
     request_body = {
         "message":
             "Let us make the world a more empathetic and creative place "\
