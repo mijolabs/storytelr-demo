@@ -1,6 +1,6 @@
 # Storytelr DEMO
 
-I had fun working on this and welcome your questions and comments. Please don't hesitate to ping me if there is something I misunderstood regarding the task and I will gladly rectify it.
+I had fun working on this and welcome your questions and comments. Please don't hesitate to ping me if there's any part of the task instructions that I may have misunderstood and I will gladly rectify it.
 
 > The goal is to design and build a RESTful API to serve as the backend for a message sharing system.
 > It should support the following features:
@@ -34,7 +34,7 @@ HTTP Basic Auth is enabled for POST requests to create new messages.
 | ----------- | -------- |
 | `storytelr` | `demo`   |
 
-Let's start by creating a new message. Use an HTTP client to send a POST request with the message string in the request body. 
+Let's start by creating a new message by sending a POST request with the message string in the request body. 
 
 Python [httpx](https://github.com/encode/httpx) example of creating a new message:
 ```python
@@ -73,7 +73,7 @@ request_body = {
 r = httpx.post(endpoint, params=params, json=request_body, auth=auth)
 print(r.text)
 ```
-You can GET the message at its URL and reload after 45 seconds to see it has expired.
+You can GET the message at its URL to verify it exists and reload the URL after it should have expired to see it's gone.
 
 ## Limitations, Possible Bugs, and Vulnerabilities
 - The lack of TLS opens up for the possibility of MITM attacks. HTTPS can be easily enabled by utilizing certificates but usually HTTPS is handled by an external tool, e.g. load balancer or cloud service.
