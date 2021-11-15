@@ -3,15 +3,16 @@ import aioredis
 
 
 class RedisClient:
-    def __init__(self, config):
+    def __init__(self, config) -> object:
         self.host = config["host"]
         self.port = config["port"]
         self.db = config["db"]
         self.password = config["password"]
 
 
-    def connect(self):
-        """Create the connection.
+    def connect(self) -> object:
+        """
+        Create the connection.
         """
         self.conn = aioredis.from_url(
             f"redis://{self.host}",
@@ -24,7 +25,8 @@ class RedisClient:
 
 
     async def store_and_schedule(self, message_entry: dict) -> None:
-        """Set a key and schedule expiration
+        """
+        Set a key and schedule expiration
         """
         set_entry = await self.conn.hset(
             message_entry["id"],
@@ -38,14 +40,16 @@ class RedisClient:
         
     
     async def get(self, message_id: str) -> dict:
-        """Retrieve a key
+        """
+        Retrieve a key
         """
         message = await self.conn.hgetall(message_id)
         return message
 
 
     async def time(self, message_id: str) -> dict:
-        """Get Redis time
+        """
+        Get Redis time
         """
         redis_time = await self.conn.time()
         return redis_time
