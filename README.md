@@ -60,15 +60,13 @@ Python [httpx](https://github.com/encode/httpx) example using the `test_expiry` 
 ```python
 import httpx
 
+expiration_seconds = 45
+
 endpoint = "http://127.0.0.1:8000"
 auth = ( "storytelr", "demo" )
 
-params = { "test_expiry": 45 }
-request_body = { 
-    "message":
-        "Let us make the world a more empathetic and creative place "\
-        "with great stories to be shared and enjoyed by anyone, anywhere and anytime."
-    }
+params = { "test_expiry": expiration_seconds }
+request_body = { "message": f"This message will self-destruct in {expiration_seconds} seconds." }
 
 r = httpx.post(endpoint, params=params, json=request_body, auth=auth)
 print(r.text)
@@ -80,7 +78,7 @@ You can GET the message at its URL to verify it exists and reload the URL after 
 - It is theoretically possible to launch a bruteforce attack and eventually stumble upon a valid message ID and access its contents. Although unfeasible for most, asynchronous requests or other methods could be used to speed up the attack. By default, this demo application uses the same length and character set used by Google Docs for sharing links to documents, which should be sufficient for our purpose considering the automatic deletion of messages after 7 days. Further mitigation could be performed by increasing the length of generated message IDs, request rate limiting, adding some form of authentication mechanism for this endpoint, or restricting access to allow requests only from specific client IPs or subnets.
 - The message ID could leak in other ways, e.g. the web application may log a request and the URL could be retrievable from the log file.
 - It may be possible to inject harmful code in message contents to exploit Redis or a web application displaying the message. This demo app has implemented basic HTML escaping but further input validation may be required.
-- Authentication credentials are exposed in cleartext in the configuration file. It is assumed it is protected by other means.
+- Authentication credentials are exposed in cleartext in the configuration file. It is assumed to be protected by other means.
 
 ## TODO
 - More error handling.
@@ -88,3 +86,7 @@ You can GET the message at its URL to verify it exists and reload the URL after 
 
 ## Testing
 Various assertion tests are available under `tests/` for use with Pytest.
+
+0. Enter `tests/` and create a virtual environment, e.g.: `python -m venv .venv`
+1. Install dependencies: `pip install -r test_requirements.txt`
+2. Run `pytest`
