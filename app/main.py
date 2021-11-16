@@ -6,6 +6,9 @@ from typing import Optional
 
 from fastapi import FastAPI, Depends, Request, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.exceptions import RequestValidationError
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 from app.redis_client import RedisClient
 from app.schemas import Message, IncomingMessage
@@ -21,6 +24,22 @@ security = HTTPBasic()
 redis_client = RedisClient(config.redis)
 redis_conn = redis_client.connect()
 
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(
+    request: Request,
+    exc: RequestValidationError
+    ):
+    """
+    Handle request validation exceptions.
+    """
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder(
+            { "error": "required field is missing" }
+            )
+    )
 
 
 def generate_message_id(length: int = config.id_length) -> str:
