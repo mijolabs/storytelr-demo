@@ -83,6 +83,7 @@ You can GET the message at its URL to verify it exists and reload the URL after 
 ## TODO
 - More error handling.
 - Logging.
+- More tests
 
 ## Testing
 Various assertion tests are available under `tests/` for use with Pytest.
