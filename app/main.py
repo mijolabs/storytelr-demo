@@ -1,4 +1,4 @@
-from secrets import token_urlsafe
+from secrets import token_urlsafe, compare_digest
 from datetime import datetime, timezone
 from html import escape
 from urllib.parse import urlparse
@@ -91,8 +91,8 @@ async def post_message(
 
     The response includes the URL where the message will be accessible, as well as the expiration time.
     """
-    correct_username = secrets.compare_digest(auth.username, config.username)
-    correct_password = secrets.compare_digest(auth.password, config.password)
+    correct_username = compare_digest(auth.username, config.username)
+    correct_password = compare_digest(auth.password, config.password)
     if not (correct_username and correct_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
