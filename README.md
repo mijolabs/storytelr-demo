@@ -88,5 +88,6 @@ You can GET the message at its URL to verify it exists and reload the URL after 
 Various assertion tests are available under `tests/` for use with Pytest.
 
 0. Enter `tests/` and create a virtual environment, e.g.: `python -m venv .venv`
-1. Install dependencies: `pip install -r test_requirements.txt`
-2. Run `pytest`
+1. Activate the venv: `source .venv/bin/activate`
+2. Install dependencies: `pip install -r test_requirements.txt`
+3. Run `pytest`
