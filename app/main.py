@@ -1,4 +1,4 @@
-import secrets
+from secrets import token_urlsafe
 from datetime import datetime, timezone
 from html import escape
 from urllib.parse import urlparse
@@ -27,7 +27,7 @@ def generate_message_id(length: int = config.id_length) -> str:
     """
     Return a randomized URL-safe string of n character length.
     """
-    return secrets.token_urlsafe(length)
+    return token_urlsafe(length)
 
 
 def message_is_valid(message):
