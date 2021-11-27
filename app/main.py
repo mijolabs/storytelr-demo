@@ -49,23 +49,19 @@ def generate_message_id(length: int = config.id_length) -> str:
     return token_urlsafe(length)
 
 
+def get_epoch_timestamp():
+    """
+    Return current UTC timestamp in unix format.
+    """
+    (timestamp := datetime.now(timezone.utc).timestamp())
+    return int(timestamp)
+
+
 def message_is_valid(message):
     """
     Validate message length.
     """
-    if config.min_length < len(message) < config.max_length:
-        return True
-    else:
-        return False
-
-
-def get_base_url(url):
-    """
-    Parse the base URL out of a Request object.
-    """
-    url = str(url)
-    url = urlparse(url)
-    return f"{url.scheme}://{url.netloc}"
+    return config.min_length < len(message) < config.max_length
 
 
 @app.post(
@@ -107,18 +103,13 @@ async def post_message(
             detail="malformed message contents"
             )
 
-    message_id = generate_message_id()
-    created = int(datetime.now(timezone.utc).timestamp())
-    expires = created + test_expiry if test_expiry else created + config.validity_seconds
-    message = escape(message_contents)
-    url = f"{get_base_url(request.url)}/{message_id}"
-    
     message_entry = Message(
-        id = message_id,
-        created = created,
-        expires = expires,
-        message = message,
-        url = url
+        (id := generate_message_id()),
+        (created := get_epoch_timestamp()),
+        expires = created + test_expiry if test_expiry
+                    else created + config.validity_seconds,
+        message = escape(message_contents),
+        url = request.scope.get("root_path", "") + id
     )
 
     message_entry = message_entry.dict()
