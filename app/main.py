@@ -1,7 +1,6 @@
 from secrets import token_urlsafe, compare_digest
 from datetime import datetime, timezone
 from html import escape
-from urllib.parse import urlparse
 from typing import Optional
 
 from fastapi import FastAPI, Depends, Request, HTTPException, status
@@ -10,9 +9,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from app.redis_client import RedisClient
-from app.schemas import Message, IncomingMessage
 from app.config import Configuration
+from app.schemas import Message, IncomingMessage
+from app.redis_client import RedisClient
 
 
 
@@ -53,15 +52,14 @@ def get_epoch_timestamp():
     """
     Return current UTC timestamp in unix format.
     """
-    (timestamp := datetime.now(timezone.utc).timestamp())
-    return int(timestamp)
+    return int(datetime.now(timezone.utc).timestamp())
 
 
 def message_is_valid(message):
     """
-    Validate message length.
+    Returns True if message length is valid.
     """
-    return config.min_length < len(message) < config.max_length
+    return config.min_length <= len(message) <= config.max_length
 
 
 @app.post(
@@ -100,7 +98,7 @@ async def post_message(
     if not message_is_valid(message_contents):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="malformed message contents"
+            detail=f"message must contain between {config.min_length} and {config.max_length} characters"
             )
 
     message_entry = Message(

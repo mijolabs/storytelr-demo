@@ -1,6 +1,6 @@
-# Storytelr DEMO
+# Whisper API [DEMO/PoC]
 
-I had fun working on this and welcome your questions and comments. Please don't hesitate to ping me if there's any part of the task instructions that I may have misunderstood and I will gladly rectify it.
+This demo proof of concept was developed over a weekend as part of a coding challenge assignment. It works as expected but isn't maintained in any way and is just here for archiving purposes. The project was developed according to the following given instructions:
 
 > The goal is to design and build a RESTful API to serve as the backend for a message sharing system.
 > It should support the following features:
@@ -12,15 +12,26 @@ I had fun working on this and welcome your questions and comments. Please don't 
 > - [x] Consider the appropriate HTTP verbs, headers and responses to use.
 > - [x] You should also include tests to assert the correctness of your solution.
 > - [x] Please document significant security risks/assumptions.
+> - [x] The complete solution should include a README that describes how to build and run the solution.
+> - [x] Please choose between Python, Java or Go, and your own choice of frameworks/libraries to help implement the web layer and testing.
+> - [x] Ensure the project is easily built with a common build system for the chosen ecosystem.
+> - [x] Consider including a Dockerfile if you wish to demonstrate your knowledge of image building.
 
 ## Main Components
 - **FastAPI** is a modern, fast (high-performance), web framework for building APIs.
 - **Redis** is an in-memory data structure store, used as a database, cache, and message broker.
 
-## Setup
-0. ***Clone it:*** `git clone https://github.com/mijolabs/storytelr-demo && cd storytelr-demo`
-1. ***Build it:*** `docker build -t storytelr-demo .`
-2. ***Start it:*** `docker run -d --name storytelr -p 8000:8000 storytelr-demo` (or omit the `-d` flag to view the live access logs)
+## Requirements
+- Python >= 3.8
+- Installed dependencies (as according to `requirements.txt`)
+- Redis
+
+The provided `Dockerfile` will greatly simplify the setup process.
+
+## Running it with Docker
+0. ***Clone it:*** `git clone https://github.com/mijolabs/whisper-demo && cd whisper-demo`
+1. ***Build it:*** `docker build -t whisper-demo .`
+2. ***Start it:*** `docker run -d --rm --name whisper -p 8000:8000 whisper-demo` (or omit the `-d` flag to view the live access logs)
 3. ***Try it:*** Browse to http://127.0.0.1:8000/docs (you may need to replace the ip with your docker server address)
 
 If you see Swagger UI docs it means we're in business.
@@ -31,8 +42,8 @@ The Swagger UI can be used to test the API functionality, or if you prefer using
 HTTP Basic Auth is enabled for POST requests to create new messages.
 
 | Default Username | Default Password |
-| ----------- | -------- |
-| `storytelr` | `demo`   |
+| ---------------- | ---------------- |
+| `whisper`      | `demo`           |
 
 Let's start by creating a new message by sending a POST request with the message string in the request body. 
 
@@ -41,15 +52,13 @@ Python [httpx](https://github.com/encode/httpx) example of creating a new messag
 import httpx
 
 endpoint = "http://127.0.0.1:8000"
-auth = ( "storytelr", "demo" )
+auth = ( "whisper", "demo" )
 
 request_body = {
-    "message":
-        "Let us make the world a more empathetic and creative place "\
-        "with great stories to be shared and enjoyed by anyone, anywhere and anytime."
+    "message": "Whisper words of wisdom, let it be."
     }
 
-r = httpx.post(endpoint, json=request_body, auth=auth)
+r = httpx.post(endpoint, auth=auth, json=request_body)
 print(r.text)
 ```
 Browse to the message URL in the response and take a look. You should see the same JSON contents as you received in the POST reply earlier.
@@ -63,12 +72,12 @@ import httpx
 expiration_seconds = 45
 
 endpoint = "http://127.0.0.1:8000"
-auth = ( "storytelr", "demo" )
+auth = ( "whisper", "demo" )
 
 params = { "test_expiry": expiration_seconds }
 request_body = { "message": f"This message will self-destruct in {expiration_seconds} seconds." }
 
-r = httpx.post(endpoint, params=params, json=request_body, auth=auth)
+r = httpx.post(endpoint, auth=auth, params=params, json=request_body)
 print(r.text)
 ```
 You can GET the message at its URL to verify it exists and reload the URL after it should have expired to confirm that it is gone.
@@ -81,9 +90,10 @@ You can GET the message at its URL to verify it exists and reload the URL after 
 - Authentication credentials are exposed in cleartext in the configuration file. It is assumed to be protected by other means.
 
 ## TODO
-- More error handling.
+- Better error handling.
 - Logging.
-- More tests
+- More tests.
+- Much refactoring.
 
 ## Testing
 Various assertion tests are available under `tests/` for use with Pytest.
