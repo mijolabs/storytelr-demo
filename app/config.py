@@ -5,7 +5,7 @@ class Configuration:
     """
     Load settings from file.
     """
-    def __init__(self, settings_file: str = "storytelr.ini") -> object:
+    def __init__(self, settings_file: str = "whisper.ini") -> object:
         self.config = configparser.ConfigParser()
         self.config.read(settings_file)
         
